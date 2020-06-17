@@ -81,6 +81,7 @@ class Make_menu_interface():
                         raise Bad_word_detection("Bad word was detected\n")
 
                 except Bad_word_detection as e:
+                    lcontent.delete(0.0, END)
                     lcontent.insert(0.0, e)
 
                 finally:
