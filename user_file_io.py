@@ -268,30 +268,36 @@ class Make_menu_interface():
                 DelID = DeIDent.get()
                 DelPW = DePWent.get()
                 DelMES = DeMesent.get()
-
-                try:
-                    if user[DelID] == DelPW:
-                        if DelMES == f"I'll delete this {DelID} account":
-                            del(user[DelID])
-                            with open('users.json', 'w') as Delaccount:
-                                json.dump(user, Delaccount)
-                            DeIDent.delete(0, END)
-                            DePWent.delete(0, END)
-                            DeMesent.delete(0, END)
-                            Dstaent.delete(0, END)
-                            Dstaent.insert(0, "Delete succeed")
+                if DelID == 'admin':
+                    DeIDent.delete(0, END)
+                    DePWent.delete(0, END)
+                    DeMesent.delete(0, END)
+                    Dstaent.delete(0, END)
+                    Dstaent.insert(0, 'You cannot delete admin ID')
+                else:
+                    try:
+                        if user[DelID] == DelPW:
+                            if DelMES == f"I'll delete this {DelID} account":
+                                del(user[DelID])
+                                with open('users.json', 'w') as Delaccount:
+                                    json.dump(user, Delaccount)
+                                DeIDent.delete(0, END)
+                                DePWent.delete(0, END)
+                                DeMesent.delete(0, END)
+                                Dstaent.delete(0, END)
+                                Dstaent.insert(0, "Delete succeed")
+                            else:
+                                Dstaent.delete(0, END)
+                                DeMesent.delete(0, END)
+                                Dstaent.insert(0, 'Message doesn\'t match')
                         else:
                             Dstaent.delete(0, END)
-                            DeMesent.delete(0, END)
-                            Dstaent.insert(0, 'Message doesn\'t match')
-                    else:
+                            DePWent.delete(0, END)
+                            Dstaent.insert(0, "Mismatch ID and Password")
+                    except KeyError:
+                        DeIDent.delete(0, END)
                         Dstaent.delete(0, END)
-                        DePWent.delete(0, END)
-                        Dstaent.insert(0, "Mismatch ID and Password")
-                except KeyError:
-                    DeIDent.delete(0, END)
-                    Dstaent.delete(0, END)
-                    Dstaent.insert(0, "user ID is not exist")
+                        Dstaent.insert(0, "user ID is not exist")
 
             Deleteroot = Toplevel()
             Deleteroot.title('Delete user')
