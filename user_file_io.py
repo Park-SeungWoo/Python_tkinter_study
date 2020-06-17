@@ -255,7 +255,7 @@ class Make_menu_interface():
             Frpwbut = Button(fuserroot, text='replace pw', command=replacePW)
             Frpwbut.grid(row=4, column=1)
 
-            Fstatent = Entry(fuserroot, bg='lightcoral', width=30)
+            Fstatent = Entry(fuserroot, bg='lightcoral', width=30, takefocus='false')
             Fstatent.grid(row=5, column=0, columnspan=2)
 
             fuserroot.mainloop()
@@ -321,7 +321,7 @@ class Make_menu_interface():
             Delbut = Button(Deleteroot, text="delete", command=Deleteuserinfo)
             Delbut.grid(row=5, column=0, columnspan=2)
 
-            Dstaent = Entry(Deleteroot, bg='slategray', width=30)
+            Dstaent = Entry(Deleteroot, bg='slategray', width=30, takefocus='false')
             Dstaent.grid(row=6, column=0, columnspan=2)
 
             Deleteroot.mainloop()
@@ -356,7 +356,7 @@ class Make_menu_interface():
         dbut = Button(self.name, text="delete", command=Deleteuser)
         dbut.grid(row=3, column=3)
 
-        statent = Entry(self.name, bg='lightcoral', width=30)
+        statent = Entry(self.name, bg='lightcoral', width=30, takefocus='false')
         statent.grid(row=4, column=0, columnspan=4)
 
         mmenu = Menu(self.name)
