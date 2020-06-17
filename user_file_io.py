@@ -76,28 +76,35 @@ class Make_menu_interface():
                 def replace_bad_word(text, index=0, replacement='****'):
                     return '%s%s%s' % (text[:index], replacement, text[index + 4:])
 
-                filename = lentry.get()
-                file = open(filename, 'r')
-                content = file.read()
                 try:
-                    lcon = content.lower()
-                    count = lcon.count('fuck')
-                    badwordindex = lcon.find('fuck')
-                    if badwordindex != -1:
-                        while count:
-                            badwordindex = lcon.find('fuck')
-                            lcon = replace_bad_word(lcon, badwordindex)
-                            content = replace_bad_word(content, badwordindex)
-                            count -= 1
-                        raise Bad_word_detection("Bad word was detected\n")
+                    filename = lentry.get()
+                    if not os.path.exists(filename):
+                        raise File_name_error('no such file in this directory')
+                except File_name_error as e:
+                    lentry.delete(0, END)
+                    lentry.insert(0, e)
+                else:
+                    file = open(filename, 'r')
+                    content = file.read()
+                    try:
+                        lcon = content.lower()
+                        count = lcon.count('fuck')
+                        badwordindex = lcon.find('fuck')
+                        if badwordindex != -1:
+                            while count:
+                                badwordindex = lcon.find('fuck')
+                                lcon = replace_bad_word(lcon, badwordindex)
+                                content = replace_bad_word(content, badwordindex)
+                                count -= 1
+                            raise Bad_word_detection("Bad word was detected\n")
 
-                except Bad_word_detection as e:
-                    lcontent.delete(0.0, END)
-                    lcontent.insert(0.0, e)
+                    except Bad_word_detection as e:
+                        lcontent.delete(0.0, END)
+                        lcontent.insert(0.0, e)
 
-                finally:
-                    lcontent.delete(0.0, END)
-                    lcontent.insert(END, content)
+                    finally:
+                        lcontent.delete(0.0, END)
+                        lcontent.insert(END, content)
 
             if self.status == 1:
                 lroot = Toplevel()
