@@ -1,5 +1,6 @@
 from tkinter import *
 import sys
+import json
 
 
 class Error(Exception):
@@ -140,13 +141,26 @@ class Make_menu_interface():
         def Createuser():
             uid = IDent.get()
             upw = PWent.get()
-            user[uid] = upw
-            IDent.delete(0, END)
-            PWent.delete(0, END)
-            statent.delete(0, END)
-            statent.insert(0, 'Create succeed')
+            try:
+                if uid in user.keys():
+                    raise UserError('User is already exist')
+            except UserError as e:
+                IDent.delete(0, END)
+                PWent.delete(0, END)
+                statent.delete(0, END)
+                statent.insert(0, e)
+            else:
+                user[uid] = upw
+                with open('users.json', 'w', encoding='utf-8') as modifyf:
+                    json.dump(user, modifyf)
+                IDent.delete(0, END)
+                PWent.delete(0, END)
+                statent.delete(0, END)
+                statent.insert(0, 'Create succeed')
 
-        user = dict()
+        with open('users.json', 'r') as f:
+            user = json.load(f)
+        print(user)
 
         self.name = Tk()
         self.name.title('my app')
