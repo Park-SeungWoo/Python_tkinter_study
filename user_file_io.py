@@ -1,5 +1,6 @@
 from tkinter import *
 import sys
+import os.path
 import json
 
 
@@ -145,6 +146,10 @@ class Make_menu_interface():
             try:
                 if uid in user.keys():
                     raise UserError('User is already exist')
+                if len(uid) < 4:
+                    raise UserError('Please use over 4chars in ID')
+                elif len(upw) < 7:
+                    raise UserError('Please use over 7chars in Password')
             except UserError as e:
                 IDent.delete(0, END)
                 PWent.delete(0, END)
@@ -210,6 +215,10 @@ class Make_menu_interface():
 
 
 if __name__ == '__main__':
+    if not os.path.exists('users.json'):
+        admin = {"admin": "admin"}
+        with open('users.json', 'w', encoding='utf-8') as CreateFile:
+            json.dump(admin, CreateFile)
     m1 = Make_menu_interface('root')
     m1.make_interface()
     m1.start()
