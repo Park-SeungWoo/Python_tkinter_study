@@ -194,6 +194,71 @@ class Make_menu_interface():
                 statent.delete(0, END)
                 statent.insert(0, 'Create succeed')
 
+        def Finduser():
+            def replacePW():
+                userid = Fident.get()
+                userpw = Fcpwent.get()
+                newpw = Fnpwent.get()
+                if user[userid] == userpw:
+                    if len(newpw) < 7:
+                        Fstatent.delete(0, END)
+                        Fnpwent.delete(0, END)
+                        Fstatent.insert(0, 'Please use over 7chars in Password')
+                    else:
+                        user[userid] = newpw
+                        Fstatent.delete(0, END)
+                        Fstatent.insert(0, "replace succeed")
+                else:
+                    Fstatent.delete(0, END)
+                    Fcpwent.delete(0, END)
+                    Fstatent.insert(0, 'Please check your current password')
+
+            def findPW():
+                userid = Fident.get()
+                try:
+                    userpw = '[' + userid + "]'s password is '" + user[userid] + "'"
+                    if userid not in user.keys():
+                        raise KeyError
+                except KeyError:
+                    Fstatent.delete(0, END)
+                    Fstatent.insert(0, f'[{userid}] is not exist')
+                else:
+                    Fstatent.delete(0, END)
+                    Fstatent.insert(0, userpw)
+
+            fuserroot = Toplevel()
+            fuserroot.title('find user')
+            fuserroot.geometry('400x600')
+
+            Label(fuserroot, text="find").grid(row=0, column=0, columnspan=2)
+
+            Label(fuserroot, text='ID').grid(row=1, column=0)
+            Fident = Entry(fuserroot, bg='lightpink', width=30)
+            Fident.grid(row=1, column=1)
+
+            Label(fuserroot, text='Current pw').grid(row=2, column=0)
+            Fcpwent = Entry(fuserroot, bg='lightpink', width=30)
+            Fcpwent.grid(row=2, column=1)
+
+            Label(fuserroot, text='New pw').grid(row=3, column=0)
+            Fnpwent = Entry(fuserroot, bg='lightpink', width=30)
+            Fnpwent.grid(row=3, column=1)
+
+            Fpwbut = Button(fuserroot, text='find pw', command=findPW)
+            Fpwbut.grid(row=4, column=0)
+
+            Frpwbut = Button(fuserroot, text='replace pw', command=replacePW)
+            Frpwbut.grid(row=4, column=1)
+
+            Fstatent = Entry(fuserroot, bg='lightcoral', width=30)
+            Fstatent.grid(row=5, column=0, columnspan=2)
+
+            fuserroot.mainloop()
+
+
+
+
+
         with open('users.json', 'r') as f:
             user = json.load(f)
         print(user)
@@ -202,22 +267,27 @@ class Make_menu_interface():
         self.name.title('my app')
         self.name.geometry('400x600')
 
-        Label(self.name, text="ID").grid(row=0, column=0)
-        IDent = Entry(self.name, bg="lightpink", width=30)
-        IDent.grid(row=0, column=1)
+        Label(self.name, text="Login").grid(row=0, column=0, columnspan=3)
 
-        Label(self.name, text="Password").grid(row=1, column=0)
+        Label(self.name, text="ID").grid(row=1, column=0)
+        IDent = Entry(self.name, bg="lightpink", width=30)
+        IDent.grid(row=1, column=1, columnspan=2, sticky=W)
+
+        Label(self.name, text="Password").grid(row=2, column=0)
         PWent = Entry(self.name, bg="lightpink", width=30)
-        PWent.grid(row=1, column=1)
+        PWent.grid(row=2, column=1, columnspan=2, sticky=W)
 
         ubut = Button(self.name, text='submit', command=Userexist)
-        ubut.grid(row=2, column=0)
+        ubut.grid(row=3, column=0)
 
         cbut = Button(self.name, text='create', command=Createuser)
-        cbut.grid(row=2, column=1, sticky=W)
+        cbut.grid(row=3, column=1)
+
+        fbut = Button(self.name, text='find', command=Finduser)
+        fbut.grid(row=3, column=2)
 
         statent = Entry(self.name, bg='lightcoral', width=30)
-        statent.grid(row=3, column=0, columnspan=2)
+        statent.grid(row=4, column=0, columnspan=3)
 
         mmenu = Menu(self.name)
         smenu = Menu(mmenu)
