@@ -199,19 +199,24 @@ class Make_menu_interface():
                 userid = Fident.get()
                 userpw = Fcpwent.get()
                 newpw = Fnpwent.get()
-                if user[userid] == userpw:
-                    if len(newpw) < 7:
-                        Fstatent.delete(0, END)
-                        Fnpwent.delete(0, END)
-                        Fstatent.insert(0, 'Please use over 7chars in Password')
-                    else:
-                        user[userid] = newpw
-                        Fstatent.delete(0, END)
-                        Fstatent.insert(0, "replace succeed")
-                else:
+                if userid not in user.keys():
                     Fstatent.delete(0, END)
-                    Fcpwent.delete(0, END)
-                    Fstatent.insert(0, 'Please check your current password')
+                    Fident.delete(0, END)
+                    Fstatent.insert(0, f'[{userid}] is not exist')
+                else:
+                    if user[userid] == userpw:
+                        if len(newpw) < 7:
+                            Fstatent.delete(0, END)
+                            Fnpwent.delete(0, END)
+                            Fstatent.insert(0, 'Please use over 7chars in Password')
+                        else:
+                            user[userid] = newpw
+                            Fstatent.delete(0, END)
+                            Fstatent.insert(0, "replace succeed")
+                    else:
+                        Fstatent.delete(0, END)
+                        Fcpwent.delete(0, END)
+                        Fstatent.insert(0, 'Please check your current password')
 
             def findPW():
                 userid = Fident.get()
@@ -256,8 +261,64 @@ class Make_menu_interface():
             fuserroot.mainloop()
 
 
+        def Deleteuser():
+            DeleteMessage = "\"I'll delete this (ID) account\""
 
+            def Deleteuserinfo():
+                DelID = DeIDent.get()
+                DelPW = DePWent.get()
+                DelMES = DeMesent.get()
 
+                try:
+                    if user[DelID] == DelPW:
+                        if DelMES == f"I'll delete this {DelID} account":
+                            del(user[DelID])
+                            with open('users.json', 'w') as Delaccount:
+                                json.dump(user, Delaccount)
+                            DeIDent.delete(0, END)
+                            DePWent.delete(0, END)
+                            DeMesent.delete(0, END)
+                            Dstaent.delete(0, END)
+                            Dstaent.insert(0, "Delete succeed")
+                        else:
+                            Dstaent.delete(0, END)
+                            DeMesent.delete(0, END)
+                            Dstaent.insert(0, 'Message doesn\'t match')
+                    else:
+                        Dstaent.delete(0, END)
+                        DePWent.delete(0, END)
+                        Dstaent.insert(0, "Mismatch ID and Password")
+                except KeyError:
+                    DeIDent.delete(0, END)
+                    Dstaent.delete(0, END)
+                    Dstaent.insert(0, "user ID is not exist")
+
+            Deleteroot = Toplevel()
+            Deleteroot.title('Delete user')
+            Deleteroot.geometry('400x600')
+
+            Label(Deleteroot, text="Delete").grid(row=0, column=0, columnspan=2)
+
+            Label(Deleteroot, text="ID").grid(row=1, column=0)
+            DeIDent = Entry(Deleteroot, bg='slategray', width=30)
+            DeIDent.grid(row=1, column=1)
+
+            Label(Deleteroot, text="Pw").grid(row=2, column=0)
+            DePWent = Entry(Deleteroot, bg='slategray', width=30)
+            DePWent.grid(row=2, column=1)
+
+            Label(Deleteroot, text=DeleteMessage).grid(row=3, column=0, columnspan=2)
+            DeMesent = Entry(Deleteroot, bg='slategray', width=30)
+            DeMesent.grid(row=4, column=0, columnspan=2)
+            DeMesent.insert(0, 'Please write the above sentence')
+
+            Delbut = Button(Deleteroot, text="delete", command=Deleteuserinfo)
+            Delbut.grid(row=5, column=0, columnspan=2)
+
+            Dstaent = Entry(Deleteroot, bg='slategray', width=30)
+            Dstaent.grid(row=6, column=0, columnspan=2)
+
+            Deleteroot.mainloop()
 
         with open('users.json', 'r') as f:
             user = json.load(f)
@@ -267,15 +328,15 @@ class Make_menu_interface():
         self.name.title('my app')
         self.name.geometry('400x600')
 
-        Label(self.name, text="Login").grid(row=0, column=0, columnspan=3)
+        Label(self.name, text="Login").grid(row=0, column=0, columnspan=4)
 
         Label(self.name, text="ID").grid(row=1, column=0)
         IDent = Entry(self.name, bg="lightpink", width=30)
-        IDent.grid(row=1, column=1, columnspan=2, sticky=W)
+        IDent.grid(row=1, column=1, columnspan=3, sticky=W)
 
         Label(self.name, text="Password").grid(row=2, column=0)
         PWent = Entry(self.name, bg="lightpink", width=30)
-        PWent.grid(row=2, column=1, columnspan=2, sticky=W)
+        PWent.grid(row=2, column=1, columnspan=3, sticky=W)
 
         ubut = Button(self.name, text='submit', command=Userexist)
         ubut.grid(row=3, column=0)
@@ -286,8 +347,11 @@ class Make_menu_interface():
         fbut = Button(self.name, text='find', command=Finduser)
         fbut.grid(row=3, column=2)
 
+        dbut = Button(self.name, text="delete", command=Deleteuser)
+        dbut.grid(row=3, column=3)
+
         statent = Entry(self.name, bg='lightcoral', width=30)
-        statent.grid(row=4, column=0, columnspan=3)
+        statent.grid(row=4, column=0, columnspan=4)
 
         mmenu = Menu(self.name)
         smenu = Menu(mmenu)
