@@ -73,8 +73,35 @@ class Make_menu_interface():
 
         def file_load():
             def load_content():
-                def replace_bad_word(text, index=0, replacement='****'):
-                    return '%s%s%s' % (text[:index], replacement, text[index + 4:])
+                def replace_bad_word(text, index=0, length=0):
+                    c = ''
+                    for i in range(length):
+                        c += '*'
+                    replacement = c
+                    return '%s%s%s' % (text[:index], replacement, text[index + length:])
+
+                def badword_detect(word, content):
+                    try:
+                        badwordlen = len(word)
+                        lcon = content.lower()
+                        count = lcon.count(word)
+                        badwordindex = lcon.find(word)
+                        if badwordindex != -1:
+                            while count:
+                                badwordindex = lcon.find(word)
+                                lcon = replace_bad_word(lcon, badwordindex, badwordlen)
+                                content = replace_bad_word(content, badwordindex, badwordlen)
+                                count -= 1
+                            raise Bad_word_detection("Bad word was detected\n\n")
+                    except Bad_word_detection as e:
+                        lcontent.delete(0.0, END)
+                        lcontent.insert(0.0, e)
+                        lcontent.insert(END, content)
+                    else:
+                        lcontent.delete(0.0, END)
+                        lcontent.insert(END, content)
+                    finally:
+                        return content
 
                 try:
                     filename = lentry.get()
@@ -86,25 +113,10 @@ class Make_menu_interface():
                 else:
                     file = open(filename, 'r')
                     content = file.read()
-                    try:
-                        lcon = content.lower()
-                        count = lcon.count('fuck')
-                        badwordindex = lcon.find('fuck')
-                        if badwordindex != -1:
-                            while count:
-                                badwordindex = lcon.find('fuck')
-                                lcon = replace_bad_word(lcon, badwordindex)
-                                content = replace_bad_word(content, badwordindex)
-                                count -= 1
-                            raise Bad_word_detection("Bad word was detected\n")
-
-                    except Bad_word_detection as e:
-                        lcontent.delete(0.0, END)
-                        lcontent.insert(0.0, e)
-
-                    finally:
-                        lcontent.delete(0.0, END)
-                        lcontent.insert(END, content)
+                    content = badword_detect('fuck', content)
+                    content = badword_detect('shit', content)
+                    badword_detect('bitch', content)
+                    # add any words that you want replace, use this form
 
             if self.status == 1:
                 lroot = Toplevel()
