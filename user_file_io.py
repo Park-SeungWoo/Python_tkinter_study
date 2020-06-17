@@ -209,6 +209,7 @@ class Make_menu_interface():
         self.name.mainloop()
 
 
-m1 = Make_menu_interface('root')
-m1.make_interface()
-m1.start()
+if __name__ == '__main__':
+    m1 = Make_menu_interface('root')
+    m1.make_interface()
+    m1.start()
