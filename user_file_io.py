@@ -73,12 +73,22 @@ class Make_menu_interface():
 
         def file_load():
             def load_content():
+                def replace_bad_word(text, index=0, replacement='****'):
+                    return '%s%s%s' % (text[:index], replacement, text[index + 4:])
+
                 filename = lentry.get()
                 file = open(filename, 'r')
                 content = file.read()
                 try:
-                    if 'fuck' in content.lower():
-                        content = content.replace('fuck', '****')
+                    lcon = content.lower()
+                    count = lcon.count('fuck')
+                    badwordindex = lcon.find('fuck')
+                    if badwordindex != -1:
+                        while count:
+                            badwordindex = lcon.find('fuck')
+                            lcon = replace_bad_word(lcon, badwordindex)
+                            content = replace_bad_word(content, badwordindex)
+                            count -= 1
                         raise Bad_word_detection("Bad word was detected\n")
 
                 except Bad_word_detection as e:
@@ -86,6 +96,7 @@ class Make_menu_interface():
                     lcontent.insert(0.0, e)
 
                 finally:
+                    lcontent.delete(0.0, END)
                     lcontent.insert(END, content)
 
             if self.status == 1:
