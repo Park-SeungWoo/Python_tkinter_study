@@ -49,6 +49,8 @@ class Make_menu_interface():
                 else:
                     file = open(filename, 'w')
                     file.write(filecontent)
+                    fcontent.delete(0.0, END)
+                    fcontent.insert(0.0, 'save succeed')
 
             if self.status == 1:
                 froot = Toplevel()
