@@ -23,6 +23,10 @@ class UserError(Error):
 class Make_menu_interface():
 
     def __init__(self, name):
+        if not os.path.exists('users.json'):
+            admin = {"admin": "admin"}
+            with open('users.json', 'w', encoding='utf-8') as CreateFile:
+                json.dump(admin, CreateFile)
         self.name = name
         self.status = 0
         self.coorlist = list()
@@ -492,10 +496,6 @@ class Make_menu_interface():
 
 
 if __name__ == '__main__':
-    if not os.path.exists('users.json'):
-        admin = {"admin": "admin"}
-        with open('users.json', 'w', encoding='utf-8') as CreateFile:
-            json.dump(admin, CreateFile)
     m1 = Make_menu_interface('root')
     m1.make_interface()
     m1.start()
