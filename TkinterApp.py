@@ -163,7 +163,7 @@ class Make_menu_interface():
                     else:
                         self.coorlist = coorstr.split(',')
                         coorent.delete(0, END)
-                        coorent.insert(0, str(len(self.coorlist)//2) + ' coordinates input succeed')
+                        coorent.insert(0, str(len(self.coorlist) // 2) + ' coordinates input succeed')
 
             def startcanvas():
                 def moveup(event):
@@ -198,7 +198,6 @@ class Make_menu_interface():
                         canv.move(1, -5, 0)
                         canv.update()
                     self.xcoord = []
-
 
                 def moveright(event):
                     for index, item in enumerate(canv.coords(1)):
@@ -371,7 +370,6 @@ class Make_menu_interface():
 
             fuserroot.mainloop()
 
-
         def Deleteuser():
             DeleteMessage = "\"I'll delete this (ID) account\""
 
@@ -389,7 +387,7 @@ class Make_menu_interface():
                     try:
                         if user[DelID] == DelPW:
                             if DelMES == f"I'll delete this {DelID} account":
-                                del(user[DelID])
+                                del (user[DelID])
                                 with open('users.json', 'w') as Delaccount:
                                     json.dump(user, Delaccount)
                                 DeIDent.delete(0, END)
