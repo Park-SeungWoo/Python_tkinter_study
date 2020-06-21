@@ -25,6 +25,9 @@ class Make_menu_interface():
     def __init__(self, name):
         self.name = name
         self.status = 0
+        self.coorlist = list()
+        self.xcoord = list()
+        self.ycoord = list()
 
     def make_interface(self):
         def file_save():
@@ -141,8 +144,110 @@ class Make_menu_interface():
                 statent.delete(0, END)
                 statent.insert(0, 'You didn\'t submitted')
 
-        def func_first():
-            print("first")
+        def canvas_move():
+            def setcoor():
+                coorstr = coorent.get()
+                if len(coorstr.split(',')) < 6:
+                    canvstat.delete(0, END)
+                    canvstat.insert(0, 'Please insert at least 3 coordinates')
+                else:
+                    try:
+                        testcoord = list(map(int, coorstr.split(',')))
+                    except ValueError:
+                        canvstat.delete(0, END)
+                        canvstat.insert(0, "Please input numbers")
+                    else:
+                        self.coorlist = coorstr.split(',')
+                        coorent.delete(0, END)
+                        coorent.insert(0, str(len(self.coorlist)//2) + ' coordinates input succeed')
+
+            def startcanvas():
+                def moveup(event):
+                    for index, item in enumerate(canv.coords(1)):
+                        if index % 2 != 0:
+                            self.ycoord.append(item)
+                    if min(self.ycoord) < 1:
+                        pass
+                    else:
+                        canv.move(1, 0, -5)
+                        canv.update()
+                    self.ycoord = []
+
+                def movedown(event):
+                    for index, item in enumerate(canv.coords(1)):
+                        if index % 2 != 0:
+                            self.ycoord.append(item)
+                    if max(self.ycoord) > 400:
+                        pass
+                    else:
+                        canv.move(1, 0, 5)
+                        canv.update()
+                    self.ycoord = []
+
+                def moveleft(event):
+                    for index, item in enumerate(canv.coords(1)):
+                        if index % 2 == 0:
+                            self.xcoord.append(item)
+                    if min(self.xcoord) < 5:
+                        pass
+                    else:
+                        canv.move(1, -5, 0)
+                        canv.update()
+                    self.xcoord = []
+
+
+                def moveright(event):
+                    for index, item in enumerate(canv.coords(1)):
+                        if index % 2 == 0:
+                            self.xcoord.append(item)
+                    if max(self.xcoord) > 400:
+                        pass
+                    else:
+                        canv.move(1, 5, 0)
+                        canv.update()
+                    self.xcoord = []
+
+                if len(self.coorlist) == 0:
+                    canvstat.delete(0, END)
+                    canvstat.insert(0, 'Please press submit button before start')
+                else:
+                    canvasapp = Toplevel()
+                    canvasapp.title('start move')
+                    canv = Canvas(canvasapp, width=400, height=400)
+                    canv.pack()
+
+                    coordinate = list(map(int, self.coorlist))
+                    canv.create_polygon(coordinate)
+                    self.coorlist = []
+
+                    canv.bind("<Up>", moveup)
+                    canv.bind("<Down>", movedown)
+                    canv.bind("<Left>", moveleft)
+                    canv.bind("<Right>", moveright)
+                    canv.focus_set()
+
+                    canv.mainloop()
+
+            if self.status == 1:
+                canvmainroot = Toplevel()
+                canvmainroot.title('canvas')
+                canvmainroot.geometry('400x600')
+
+                Label(canvmainroot, text='input coordinate').grid(row=0, column=0, columnspan=2)
+                coorent = Entry(canvmainroot, width=30)
+                coorent.grid(row=1, column=0, columnspan=2)
+                submitbut = Button(canvmainroot, text='submit', command=setcoor)
+                submitbut.grid(row=2, column=0)
+                startbut = Button(canvmainroot, text='start', command=startcanvas)
+                startbut.grid(row=2, column=1)
+                canvstat = Entry(canvmainroot, width=30)
+                canvstat.grid(row=3, column=0, columnspan=2)
+                canvstat.insert(0, "use this form (x1,y1,x2,y2,...)")
+
+                canvmainroot.mainloop()
+            else:
+                statent.delete(0, END)
+                statent.insert(0, 'You didn\'t submitted')
 
         def func_second():
             print("second")
@@ -372,8 +477,8 @@ class Make_menu_interface():
         filemenu.add_command(label="save", command=file_save)
         filemenu.add_command(label="load", command=file_load)
 
-        smenu.add_cascade(label="function", menu=funcmenu)
-        funcmenu.add_command(label="first", command=func_first)
+        smenu.add_cascade(label="canvas", menu=funcmenu)
+        funcmenu.add_command(label="canvas move", command=canvas_move)
         funcmenu.add_command(label="second", command=func_second)
 
         smenu.add_separator()
