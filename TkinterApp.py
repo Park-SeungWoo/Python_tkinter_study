@@ -321,6 +321,8 @@ class Make_menu_interface():
                             Fstatent.insert(0, 'Please use over 7chars in Password')
                         else:
                             user[userid] = newpw
+                            with open('/users.json', 'w') as replace:
+                                json.dump(user, replace)
                             Fstatent.delete(0, END)
                             Fstatent.insert(0, "replace succeed")
                     else:
